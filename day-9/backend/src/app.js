@@ -9,7 +9,7 @@ app.use(express.json());
 
 /* POST API/notes */
 /* create new note and save in databse */
-app.post("/notes", async (req, res) => {
+app.post("/api/notes", async (req, res) => {
     const { title, description } = req.body;
 
     console.log(title, description)
@@ -26,7 +26,7 @@ app.post("/notes", async (req, res) => {
 
 /* GET API/notes */
 /* FETCH ALL THE NOTES from mongoDB and send them in reponse */
-app.get("/notes", async (req, res) => {
+app.get("/api/notes", async (req, res) => {
     const notes = await noteModel.find();
 
     res.status(200).json({
@@ -37,7 +37,7 @@ app.get("/notes", async (req, res) => {
 
 /* DELETE API/notes?:index */
 /* Delete note with the id from req.params */
-app.delete("/notes/:id", async (req, res) => {
+app.delete("/api/notes/:id", async (req, res) => {
     const id = req.params.id
 
     await noteModel.findByIdAndDelete(id);
@@ -49,7 +49,7 @@ app.delete("/notes/:id", async (req, res) => {
 
 /* PATCH API/notes/:id */
 /* update the description of the notes */
-app.patch("/notes/:id", async (req, res) => {
+app.patch("/api/notes/:id", async (req, res) => {
     const id = req.params.id
     const { description } = req.body;
 
