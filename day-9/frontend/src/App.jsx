@@ -63,7 +63,7 @@ const App = () => {
   return (
     <>
       <h1>Create Note</h1>
-      
+
       <form className='note-create-form' onSubmit={submitHandler} >
         <input type="text" placeholder='Enter title'
           value={title} onChange={(e) => {
@@ -97,7 +97,7 @@ const App = () => {
                     handleUpdateNoteDesc(note._id)
                   }}
                 >
-                  update note description
+                  update note's description
                 </button>
               </div>
             </div>
