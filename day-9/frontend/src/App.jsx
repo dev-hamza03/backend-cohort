@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from "axios"
-import { useNavigate } from "react-router-dom";
 
 
 const App = () => {
@@ -31,11 +30,9 @@ const App = () => {
       .then((res) => {
         console.log(res.data);
         fetchNotes();
+        setTitle("");
+        setDescription("");
       });
-
-
-    setTitle("");
-    setDescription("");
   };
 
   function handleDeleteNote(noteId) {
@@ -48,15 +45,16 @@ const App = () => {
 
   function handleUpdateNoteDesc(noteId) {
     console.log(noteId);
-    const noewDescription = prompt("Enter noew description");
+    const newDescription = prompt("Enter new description");
 
-    axios.patch("https://backend-cohort-tkci.onrender.com//api/notes/" + noteId, {
-      description: noewDescription
+    if (!newDescription) return;
+
+    axios.patch("https://backend-cohort-tkci.onrender.com/api/notes/" + noteId, {
+      description: newDescription
     })
       .then((res) => {
         console.log(res.data);
         fetchNotes();
-        console.log(res.data);
       });
   };
 
