@@ -56,6 +56,43 @@ authRouter.post("/get-me", async (req, res) => {
     });
 });
 
+authRouter.post("/login", async (req, res) => {
+    const { email, password } = req.body;
 
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+        res.status(404).json({
+            message: "user not found"
+        });
+    }
+
+    const hash = crypto.createHash("sha256").update(password).digest("hex");
+
+    const isPasswordMatched = hash === user.password;
+
+    if (!isPasswordMatched) {
+        return res.status(401).json({
+            message: "Invalid password"
+        });
+    };
+
+    const token = jwt.sign(
+        {
+            id: user._id
+        },
+        process.env.JWT_TOKEN, { expiresIn: ("1h") }
+    )
+
+    res.cookie("jwt_token", token);
+
+    res.status(200).json({
+        message: "user logged in successfully",
+        user: {
+            name: user.name,
+            email: user.email
+        }
+    });
+});
 
 module.exports = authRouter;
