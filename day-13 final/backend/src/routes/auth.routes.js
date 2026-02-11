@@ -43,5 +43,19 @@ authRouter.post("/register", async (req, res) => {
 });
 
 
+authRouter.post("/get-me", async (req, res) => {
+    const { jwt_token } = req.cookies
+
+    const decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN);
+
+    const user = await userModel.findById(decoded.id);
+
+    res.json({
+        name: user.name,
+        email: user.email
+    });
+});
+
+
 
 module.exports = authRouter;
