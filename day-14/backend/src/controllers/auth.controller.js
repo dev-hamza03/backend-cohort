@@ -1,9 +1,9 @@
 const userModel = require("../models/user.model");
-const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 async function registerController(req, res) {
-    const { userName, email, password, bio, profileImage } = req.body;
+    const { username, email, password, bio, profileImage } = req.body;
 
     // const isUserExistsByEmail = await userModel.findOne({ email });
 
@@ -23,7 +23,7 @@ async function registerController(req, res) {
 
     const isUserAlreadyExists = await userModel.findOne({
         $or: [
-            { userName },
+            { username },
             { email }
         ]
     });
@@ -34,10 +34,10 @@ async function registerController(req, res) {
         });
     };
 
-    const hash = crypto.createHash("sha256").update(password).digest("hex");
+    const hash = await bcrypt.hash(password, 10);
 
     const user = await userModel.create({
-        userName,
+        username,
         email,
         password: hash,
         bio,
@@ -55,21 +55,23 @@ async function registerController(req, res) {
 
     res.status(201).json({
         message: "User registered successfully",
-        user: user.userName,
-        email: user.email,
-        bio: user.bio,
-        profileImage: user.profileImage
+        user: {
+            username: user.username,
+            email: user.email,
+            bio: user.bio,
+            profileImage: user.profileImage
+        }
     });
 
 };
 
 async function loginController(req, res) {
-    const { userName, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     const user = await userModel.findOne({
         $or: [
             {
-                userName: userName
+                userName: username
             },
             {
                 email: email
@@ -83,9 +85,8 @@ async function loginController(req, res) {
         });
     };
 
-    const hash = crypto.createHash("sha256").update(password).digest("hex");
 
-    const isPasswordValid = hash === user.password;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
         return res.status(401).json({
@@ -105,7 +106,7 @@ async function loginController(req, res) {
     res.status(200).json({
         message: "User loggedin successfully",
         user: {
-            username: user.userName,
+            username: user.username,
             email: user.email,
             bio: user.bio,
             profileImage: user.profileImage
