@@ -71,7 +71,7 @@ async function loginController(req, res) {
     const user = await userModel.findOne({
         $or: [
             {
-                userName: username
+                username: username
             },
             {
                 email: email
