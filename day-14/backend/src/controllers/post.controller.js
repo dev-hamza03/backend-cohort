@@ -46,7 +46,86 @@ async function createPostController(req, res) {
 
 };
 
+async function getPostController(req, res) {
+    const { jwt_token } = req.cookies;
+
+    if (!jwt_token) {
+        return res.status(401).json({
+            message: "Token not provided, Inavlid access"
+        });
+    }
+
+    let decoded = null
+
+    try {
+        decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN)
+    } catch (err) {
+        return res.status(401).json({
+            messsage: "Invalid token"
+        });
+    }
+
+    const UserId = decoded.id;
+
+    const posts = await postModel.find({
+        user: UserId
+    });
+
+    res.status(200).json({
+        message: "posts fetched successfully",
+        posts
+    });
+};
+
+async function getPostDetailsController(req, res) {
+
+    const { jwt_token } = req.cookies;
+
+    if (!jwt_token) {
+        return res.status(401).json({
+            message: "Token not provied, Inavlid accesss"
+        });
+    }
+
+    let decoded = null;
+
+    try {
+        decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN)
+    } catch (err) {
+        return res.status(401).json({
+            message: "Invalid token"
+        })
+    }
+
+    const userId = decoded.id;
+    const postId = req.params.postID;
+
+    const post = await postModel.findById(postId)
+
+    if (!post) {
+        return res.status(404).json({
+            message: "post not found"
+        });
+    };
+
+    const isvalidUser = post.user.toString() === userId
+
+    if (!isvalidUser) {
+        return res.status(403).json({
+            message: "Forbidden content"
+        });
+    };
+
+    res.status(200).json({
+        message: "post fetched successfully",
+        post
+    });
+}
+
+
 
 module.exports = {
-    createPostController
+    createPostController,
+    getPostController,
+    getPostDetailsController
 }
