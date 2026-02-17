@@ -9,23 +9,6 @@ const imagekit = new ImageKit({
 
 async function createPostController(req, res) {
 
-    const { jwt_token } = req.cookies
-
-    if (!jwt_token) {
-        return res.status(401).json({
-            message: "Token not provided, unauthorized accesss"
-        });
-    };
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN);
-    } catch (err) {
-        return res.status(401).json({
-            message: "Invalid or expired token"
-        });
-    }
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), 'file'),
@@ -36,7 +19,7 @@ async function createPostController(req, res) {
     const post = await postModel.create({
         caption: req.body.caption,
         imgURL: file.url,
-        user: decoded.id
+        user: req.user.id
     });
 
     res.status(201).json({
@@ -47,25 +30,8 @@ async function createPostController(req, res) {
 };
 
 async function getPostController(req, res) {
-    const { jwt_token } = req.cookies;
 
-    if (!jwt_token) {
-        return res.status(401).json({
-            message: "Token not provided, Inavlid access"
-        });
-    }
-
-    let decoded = null
-
-    try {
-        decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN)
-    } catch (err) {
-        return res.status(401).json({
-            messsage: "Invalid token"
-        });
-    }
-
-    const UserId = decoded.id;
+    const UserId = req.user.id
 
     const posts = await postModel.find({
         user: UserId
@@ -79,25 +45,8 @@ async function getPostController(req, res) {
 
 async function getPostDetailsController(req, res) {
 
-    const { jwt_token } = req.cookies;
 
-    if (!jwt_token) {
-        return res.status(401).json({
-            message: "Token not provied, Inavlid accesss"
-        });
-    }
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(jwt_token, process.env.JWT_TOKEN)
-    } catch (err) {
-        return res.status(401).json({
-            message: "Invalid token"
-        })
-    }
-
-    const userId = decoded.id;
+    const userId = req.user.id
     const postId = req.params.postID;
 
     const post = await postModel.findById(postId)
