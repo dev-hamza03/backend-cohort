@@ -24,7 +24,15 @@ postRouter.get("/", identifyUser, postController.getPostController);
     return a deatil about specifis posts with the id, also check whether the post belongs to the user that us reuested
 */
 
-postRouter.get("/details/:postID", identifyUser, postController.getPostDetailsController)
+postRouter.get("/details/:postID", identifyUser, postController.getPostDetailsController);
+
+
+/* 
+  @route post /api/posts/like/:postId
+  @description  like a post with the id provided in the request params
+*/
+
+postRouter.post("/like/:postId", identifyUser,postController.likePostController);
 
 
 

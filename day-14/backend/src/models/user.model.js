@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        unique: [true, "User name already sxists"],
-        require: [true, "User name is required"]
+        unique: [true, "User name already exists"],
+        required: [true, "User name is required"]
     },
     email: {
         type: String,
         unique: [true, "Email already exists"],
-        require: [true, "Emailis required"]
+        required: [true, "Email is required"]
     },
     password: {
         type: String,
-        require: [true, "password is required"]
+        required: [true, "Password is required"]
     },
     bio: String,
     profileImage: {
@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
         default: "https://ik.imagekit.io/vmvulshcs/vector-flat-illustration-grayscale-avatar-600nw-2281862025.webp"
     }
 });
-
 
 const userModel = mongoose.model("users", userSchema);
 
