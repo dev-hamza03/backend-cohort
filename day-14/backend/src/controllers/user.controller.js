@@ -23,14 +23,14 @@ async function followUserController(req, res) {
         });
     }
 
-    const isAlreadyFollwing = await followModel.find({
+    const isAlreadyFollwing = await followModel.findOne({
         follower: followerUsername,
         followee: followeeUsername
     });
 
     if (isAlreadyFollwing) {
         return res.status(200).json({
-            message: `you are already following ${followerUsername}`,
+            message: `you are already following ${followeeUsername}`,
             follow: isAlreadyFollwing
         });
     }
