@@ -1,7 +1,8 @@
 import "../styles/form.scss"
-import { Link } from "react-router"
+import { Link, Navigate } from "react-router"
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 
 const Login = () => {
@@ -9,18 +10,24 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { handleLogin } = useAuth();
+  const { handleLogin, loading } = useAuth();
+  const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <h1>Loading.....</h1>
+    )
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
 
+
     handleLogin(username, password)
       .then((res) => {
         console.log(res);
+        navigate('/')
       })
-
-
-
 
   }
 
