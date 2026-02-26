@@ -1,7 +1,7 @@
 import "../styles/form.scss"
 import { Link } from "react-router"
 import { useState } from "react";
-import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
 
 
 const Login = () => {
@@ -9,18 +9,19 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const { handleLogin } = useAuth();
+
+  function handleSubmit(e) {
     e.preventDefault();
 
-    axios.post("http://localhost:3000/api/auth/login", {
-      username,
-      password
-    }, {   
-      withCredentials: true
-    })
+    handleLogin(username, password)
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
       })
+
+
+
+
   }
 
   return (

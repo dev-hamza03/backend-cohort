@@ -32,6 +32,11 @@ main {
             background-color: #bd0c23;
             color: white;
             cursor: pointer;
+            transition: all ease-in-out .3s;
+
+            &:active{
+                scale: .86;
+            }
         }
     }
 }
