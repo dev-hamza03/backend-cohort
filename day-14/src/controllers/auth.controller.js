@@ -4,6 +4,8 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser');
 
+
+
 async function registerController(req, res) {
     const { username, email, password, bio, profileImage } = req.body
 
