@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
     userId: {
         ref: "user",
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        required:[true,"UserId is required for creating an post"]
     },
     caption: String,
     imageUrl: {

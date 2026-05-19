@@ -10,7 +10,7 @@ async function registerController(req, res) {
     const { username, email, password, bio, profileImage } = req.body
 
     const isUserAlreadyExists = await userModel.findOne({
-        $nor: [
+        $or: [
             { username },
             { email }
         ]
@@ -39,7 +39,7 @@ async function registerController(req, res) {
         { expiresIn: '1d' }
     )
 
-    res.cookie('jwt_token', token)
+    res.cookie('token', token)
 
     res.status(201).json({
         message: "User registered successfully",
@@ -85,7 +85,7 @@ async function loginController(req, res) {
         { expiresIn: "1d" }
     )
 
-    res.cookie("jwt_token", token);
+    res.cookie("token", token);
 
     res.status(200).json({
         message: "User loggedIn successfully",
