@@ -1,8 +1,7 @@
-
 const userModel = require('../models/user.model')
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const cookieParser = require('cookie-parser');
+
 
 
 

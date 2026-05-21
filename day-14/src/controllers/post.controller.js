@@ -1,7 +1,7 @@
-const ImageKit = require("@imagekit/nodejs");
+const ImageKit = require("@imagekit/nodejs").default;
 const { toFile } = require("@imagekit/nodejs");
-const jwt = require("jsonwebtoken");
 const postModel = require("../models/post.model");
+
 
 const imagekit = new ImageKit({
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY
@@ -9,26 +9,6 @@ const imagekit = new ImageKit({
 
 
 async function createPostController(req, res) {
-
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Token not provided, Unauthorised access"
-        })
-    }
-
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (error) {
-        return res.status(401).json({
-            message: "User not authorised"
-        })
-    }
-
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), "file"),
@@ -40,7 +20,7 @@ async function createPostController(req, res) {
     const post = await postModel.create({
         caption: req.body.caption,
         imageUrl: file.url,
-        userId: decoded.id
+        userId: req.user.id
     });
 
     res.status(201).json({
@@ -50,28 +30,10 @@ async function createPostController(req, res) {
 
 };
 
-async function getPostController(req, res) {
-
-    const token = req.cookies.token
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Token not provided, Unauthorised access"
-        })
-    }
+async function getPostsController(req, res) {
 
 
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (error) {
-        return res.status(401).json({
-            message: "User not authorised"
-        })
-    }
-
-    const userId = decoded.id
+    const userId = req.user.id
 
     const posts = await postModel.find({ userId });
 
@@ -84,25 +46,7 @@ async function getPostController(req, res) {
 
 async function getPostDetailsController(req, res) {
 
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Token not provided"
-        })
-    }
-
-    let decoded = null;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    } catch (error) {
-        return res.status(401).json({
-            message: "User not authorised"
-        });
-    }
-
-    const userId = decoded.id
+    const userId = req.user.id
     const postId = req.params.postId
 
     const post = await postModel.findById(postId)
@@ -129,6 +73,6 @@ async function getPostDetailsController(req, res) {
 
 module.exports = {
     createPostController,
-    getPostController,
+    getPostsController,
     getPostDetailsController
 }
