@@ -2,10 +2,17 @@ const mongoose = require("mongoose");
 
 const followSchema = new mongoose.Schema({
     follower: {
-        type: String
+        type: String,
+        required: true
     },
     followee: {
-        type: String
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ["pending", "accepted","rejected"],
+        default: "pending"
     }
 }, { timestamps: true });
 
